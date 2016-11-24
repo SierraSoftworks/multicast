@@ -19,6 +19,12 @@ type Channel struct {
 func New() *Channel {
 	c := make(chan interface{})
 
+	return From(c)
+}
+
+// From creates a new multicast channel which exposes messages it receives
+// on the provided channel to all connected listeners.
+func From(c chan interface{}) *Channel {
 	return &Channel{
 		C: c,
 		c: c,
