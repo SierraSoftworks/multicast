@@ -19,6 +19,36 @@ func ExampleListener() {
 	}()
 
 	m.C <- "Hello!"
+	m.Close()
+}
+
+func ExampleNewListener() {
+	s := make(chan interface{})
+
+	go func() {
+		l := multicast.NewListener(s)
+		fmt.Printf("Listener got: %s\n", <-l.C)
+	}()
+
+	s <- "Hello World!"
+	close(s)
+}
+
+func ExampleListener_Chain() {
+	s := make(chan interface{})
+
+	l1 := multicast.NewListener(s)
+	go func() {
+		fmt.Printf("Listener 1: %s\n", <-l1.C)
+	}()
+
+	l2 := l1.Chain()
+	go func() {
+		fmt.Printf("Listener 2: %s\n", <-l2.C)
+	}()
+
+	s <- "Hello World!"
+	close(s)
 }
 
 func TestListener(t *testing.T) {
