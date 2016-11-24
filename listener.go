@@ -7,7 +7,12 @@ type Listener struct {
 	f chan interface{}
 }
 
-func newListener(source <-chan interface{}) *Listener {
+// NewListener creates a new listener which will forward messages
+// it receives on its f channel before exposing them on its C
+// channel.
+// You will very rarely need to use this method directly in your
+// applications, prefer using From instead.
+func NewListener(source <-chan interface{}) *Listener {
 	out := make(chan interface{}, 0)
 	l := &Listener{
 		C: out,
@@ -30,8 +35,12 @@ func newListener(source <-chan interface{}) *Listener {
 	return l
 }
 
-func (l *Listener) chain() *Listener {
+// Chain is a shortcut which updates an existing listener to forward
+// to a new listener and then returns the new listener.
+// You will generally not need to make use of this method in your
+// applications.
+func (l *Listener) Chain() *Listener {
 	f := make(chan interface{})
 	l.f = f
-	return newListener(f)
+	return NewListener(f)
 }

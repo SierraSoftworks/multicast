@@ -39,9 +39,9 @@ func (c *Channel) Listen() *Listener {
 	defer c.m.Unlock()
 
 	if c.l == nil {
-		c.l = newListener(c.c)
+		c.l = NewListener(c.c)
 	} else {
-		c.l = c.l.chain()
+		c.l = c.l.Chain()
 	}
 
 	return c.l

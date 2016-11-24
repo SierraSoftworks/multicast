@@ -1,4 +1,4 @@
-package multicast
+package multicast_test
 
 import (
 	"fmt"
@@ -26,14 +26,18 @@ func TestListener(t *testing.T) {
 		s := make(chan interface{}, 1)
 
 		Convey("Single Listener", func() {
-			l := newListener(s)
+			l := multicast.NewListener(s)
 
 			So(l, ShouldNotBeNil)
 			So(l.C, ShouldNotBeNil)
-			So(l.f, ShouldBeNil)
 
 			s <- "Hello"
 			So(<-l.C, ShouldEqual, "Hello")
+
+			Convey("Multiple Writes", func() {
+				s <- "World"
+				So(<-l.C, ShouldEqual, "World")
+			})
 
 			Convey("Closing", func() {
 				close(s)
@@ -43,16 +47,13 @@ func TestListener(t *testing.T) {
 		})
 
 		Convey("Chained Listeners", func() {
-			l1 := newListener(s)
+			l1 := multicast.NewListener(s)
 			So(l1, ShouldNotBeNil)
 			So(l1.C, ShouldNotBeNil)
-			So(l1.f, ShouldBeNil)
 
-			l2 := l1.chain()
+			l2 := l1.Chain()
 			So(l2, ShouldNotBeNil)
 			So(l2.C, ShouldNotBeNil)
-			So(l2.f, ShouldBeNil)
-			So(l1.f, ShouldNotBeNil)
 
 			Convey("Ordered Reads", func() {
 				s <- "Hello"
