@@ -1,4 +1,4 @@
-# Multicast
+# Multicast [![Build Status](https://travis-ci.org/SierraSoftworks/multicast.svg?branch=master)](https://travis-ci.org/SierraSoftworks/multicast) [![GoDoc](https://godoc.org/github.com/SierraSoftworks/multicast?status.svg)](https://godoc.org/github.com/SierraSoftworks/multicast)
 **Multi-subscriber channels for Golang**
 
 The multicast module provides single-writer, multiple-reader semantics around Go channels.
