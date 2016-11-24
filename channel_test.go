@@ -8,7 +8,7 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func ExampleChannel() {
+func ExampleNew() {
 	c := multicast.New()
 
 	go func() {
@@ -29,7 +29,7 @@ func ExampleChannel() {
 	c.Close()
 }
 
-func ExampleFromChannel() {
+func ExampleFrom() {
 	source := make(chan interface{})
 	c := multicast.From(source)
 
@@ -49,6 +49,19 @@ func ExampleFromChannel() {
 
 	source <- "Hello World!"
 	close(source)
+}
+
+func ExampleClose() {
+	c := multicast.New()
+
+	go func() {
+		l := c.Listen()
+		for range l.C {
+		}
+		fmt.Println("Listener closed")
+	}()
+
+	c.Close()
 }
 
 func TestChannel(t *testing.T) {

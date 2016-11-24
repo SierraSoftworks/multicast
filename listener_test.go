@@ -1,10 +1,25 @@
 package multicast
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/SierraSoftworks/multicast"
 	. "github.com/smartystreets/goconvey/convey"
 )
+
+func ExampleListener() {
+	m := multicast.New()
+	l := m.Listen()
+
+	go func() {
+		for msg := range l.C {
+			fmt.Printf("Listener got: %#v\n", msg)
+		}
+	}()
+
+	m.C <- "Hello!"
+}
 
 func TestListener(t *testing.T) {
 	Convey("Listener", t, func() {
