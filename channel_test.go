@@ -51,7 +51,7 @@ func ExampleFrom() {
 	close(source)
 }
 
-func ExampleClose() {
+func ExampleChannel_Close() {
 	c := multicast.New()
 
 	go func() {
