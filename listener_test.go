@@ -2,6 +2,7 @@ package multicast_test
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 
 	"github.com/SierraSoftworks/multicast"
@@ -12,48 +13,77 @@ func ExampleListener() {
 	m := multicast.New()
 	l := m.Listen()
 
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+
 	go func() {
 		for msg := range l.C {
 			fmt.Printf("Listener got: %#v\n", msg)
 		}
+		wg.Done()
 	}()
 
 	m.C <- "Hello!"
 	m.Close()
+	wg.Wait()
+
+	// Output:
+	// Listener got: "Hello!"
 }
 
 func ExampleNewListener() {
 	s := make(chan interface{})
 
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+
 	go func() {
 		l := multicast.NewListener(s)
 		fmt.Printf("Listener got: %s\n", <-l.C)
+		wg.Done()
 	}()
 
 	s <- "Hello World!"
 	close(s)
+	wg.Wait()
+
+	// Output:
+	// Listener got: Hello World!
 }
 
 func ExampleListener_Chain() {
 	s := make(chan interface{})
 
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+
 	l1 := multicast.NewListener(s)
 	go func() {
 		fmt.Printf("Listener 1: %s\n", <-l1.C)
+		wg.Done()
 	}()
+
+	wg.Add(1)
 
 	l2 := l1.Chain()
 	go func() {
 		fmt.Printf("Listener 2: %s\n", <-l2.C)
+		wg.Done()
 	}()
 
 	s <- "Hello World!"
 	close(s)
+
+	wg.Wait()
+
+	// Unordered Output:
+	// Listener 1: Hello World!
+	// Listener 2: Hello World!
 }
 
 func TestListener(t *testing.T) {
 	Convey("Listener", t, func() {
-		s := make(chan interface{}, 1)
+		s := make(chan interface{}, 0)
 
 		Convey("Single Listener", func() {
 			l := multicast.NewListener(s)

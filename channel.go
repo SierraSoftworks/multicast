@@ -47,7 +47,7 @@ func (c *Channel) Listen() *Listener {
 	return c.l
 }
 
-// Close is a convinience function for closing the top level channel.
+// Close is a convenience function for closing the top level channel.
 // You may also close the channel directly by using `close(c.C)`.
 func (c *Channel) Close() {
 	c.m.Lock()

@@ -2,6 +2,7 @@ package multicast_test
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 
 	"github.com/SierraSoftworks/multicast"
@@ -10,9 +11,13 @@ import (
 
 func ExampleNew() {
 	c := multicast.New()
+	wg := sync.WaitGroup{}
+	wg.Add(2)
 
 	go func() {
 		l := c.Listen()
+		wg.Done()
+		defer wg.Done()
 		for msg := range l.C {
 			fmt.Printf("Listener 1: %s\n", msg)
 		}
@@ -20,21 +25,34 @@ func ExampleNew() {
 
 	go func() {
 		l := c.Listen()
+		wg.Done()
+		defer wg.Done()
 		for msg := range l.C {
 			fmt.Printf("Listener 2: %s\n", msg)
 		}
 	}()
 
+	wg.Wait()
+	wg.Add(2)
 	c.C <- "Hello World!"
 	c.Close()
+	wg.Wait()
+
+	// Unordered Output:
+	// Listener 1: Hello World!
+	// Listener 2: Hello World!
 }
 
 func ExampleFrom() {
 	source := make(chan interface{})
 	c := multicast.From(source)
+	wg := sync.WaitGroup{}
+	wg.Add(2)
 
 	go func() {
 		l := c.Listen()
+		wg.Done()
+		defer wg.Done()
 		for msg := range l.C {
 			fmt.Printf("Listener 1: %s\n", msg)
 		}
@@ -42,26 +60,42 @@ func ExampleFrom() {
 
 	go func() {
 		l := c.Listen()
+		wg.Done()
+		defer wg.Done()
 		for msg := range l.C {
 			fmt.Printf("Listener 2: %s\n", msg)
 		}
 	}()
 
+	wg.Wait()
+	wg.Add(2)
 	source <- "Hello World!"
 	close(source)
+	wg.Wait()
+
+	// Unordered Output:
+	// Listener 1: Hello World!
+	// Listener 2: Hello World!
 }
 
 func ExampleChannel_Close() {
 	c := multicast.New()
+	wg := sync.WaitGroup{}
+	wg.Add(1)
 
 	go func() {
 		l := c.Listen()
 		for range l.C {
 		}
 		fmt.Println("Listener closed")
+		wg.Done()
 	}()
 
 	c.Close()
+	wg.Wait()
+
+	// Output:
+	// Listener closed
 }
 
 func TestChannel(t *testing.T) {
