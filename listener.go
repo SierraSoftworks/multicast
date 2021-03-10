@@ -13,7 +13,7 @@ type Listener struct {
 // You will very rarely need to use this method directly in your
 // applications, prefer using From instead.
 func NewListener(source <-chan interface{}) *Listener {
-	out := make(chan interface{}, 0)
+	out := make(chan interface{}, 1)
 	l := &Listener{
 		C: out,
 	}
@@ -23,7 +23,9 @@ func NewListener(source <-chan interface{}) *Listener {
 			if l.f != nil {
 				l.f <- v
 			}
-			out <- v
+			if len(out) == 0 {
+				out <- v
+			}
 		}
 
 		if l.f != nil {
