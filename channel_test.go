@@ -10,7 +10,7 @@ import (
 )
 
 func ExampleNew() {
-	c := multicast.New[any]()
+	c := multicast.New[string]()
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
@@ -79,7 +79,7 @@ func ExampleFrom() {
 }
 
 func ExampleChannel_Close() {
-	c := multicast.New[any]()
+	c := multicast.New[struct{}]()
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 

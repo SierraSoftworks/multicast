@@ -10,7 +10,7 @@ import (
 )
 
 func ExampleListener() {
-	m := multicast.New[any]()
+	m := multicast.New[string]()
 	l := m.Listen()
 
 	wg := sync.WaitGroup{}

@@ -1,4 +1,4 @@
-# Multicast [![Build Status](https://travis-ci.org/SierraSoftworks/multicast.svg?branch=master)](https://travis-ci.org/SierraSoftworks/multicast) [![GoDoc](https://godoc.org/github.com/SierraSoftworks/multicast?status.svg)](https://godoc.org/github.com/SierraSoftworks/multicast)
+# Multicast [![Build Status](https://travis-ci.org/SierraSoftworks/multicast.svg?branch=master)](https://travis-ci.org/SierraSoftworks/multicast) [![GoDoc](https://godoc.org/github.com/SierraSoftworks/multicast?status.svg)](https://godoc.org/github.com/SierraSoftworks/multicast/v2)
 **Multi-subscriber channels for Golang**
 
 The multicast module provides single-writer, multiple-reader semantics around Go channels.
@@ -14,6 +14,8 @@ and guaranteeing delivery to all registered listeners when a message is publishe
    channels doesn't need to change.
  - **Low Overheads** with linear memory growth as your number of listeners increases
    and no buffer overheads.
+ - **Generics Support** when using the `v2` library, allowing you to statically validate
+   the types of messages you're sending and receiving.
 
 ## Example
 
@@ -21,11 +23,11 @@ and guaranteeing delivery to all registered listeners when a message is publishe
 import (
     "fmt"
 
-    "github.com/SierraSoftworks/multicast"
+    "github.com/SierraSoftworks/multicast/v2"
 )
 
 func main() {
-    c := multicast.New()
+    c := multicast.New[string]()
 
 	go func() {
 		l := c.Listen()
