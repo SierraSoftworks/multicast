@@ -5,12 +5,12 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/SierraSoftworks/multicast"
+	"github.com/SierraSoftworks/multicast/v2"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func ExampleNew() {
-	c := multicast.New()
+	c := multicast.New[any]()
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
@@ -79,7 +79,7 @@ func ExampleFrom() {
 }
 
 func ExampleChannel_Close() {
-	c := multicast.New()
+	c := multicast.New[any]()
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
@@ -101,7 +101,7 @@ func ExampleChannel_Close() {
 func TestChannel(t *testing.T) {
 	Convey("Channel", t, func() {
 		Convey("Constructor", func() {
-			c := multicast.New()
+			c := multicast.New[any]()
 			So(c, ShouldNotBeNil)
 			So(c.C, ShouldNotBeNil)
 		})
@@ -126,7 +126,7 @@ func TestChannel(t *testing.T) {
 		})
 
 		Convey("Listen", func() {
-			c := multicast.New()
+			c := multicast.New[any]()
 			So(c, ShouldNotBeNil)
 
 			l := c.Listen()
@@ -150,7 +150,7 @@ func TestChannel(t *testing.T) {
 		})
 
 		Convey("Close", func() {
-			c := multicast.New()
+			c := multicast.New[any]()
 			So(c, ShouldNotBeNil)
 
 			l := c.Listen()

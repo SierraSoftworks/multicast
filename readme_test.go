@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/SierraSoftworks/multicast"
+	"github.com/SierraSoftworks/multicast/v2"
 )
 
 func ExampleReadme() {
-	c := multicast.New()
+	c := multicast.New[any]()
 	wg := sync.WaitGroup{}
 
 	wg.Add(2)

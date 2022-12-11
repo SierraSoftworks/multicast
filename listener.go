@@ -2,9 +2,9 @@ package multicast
 
 // Listener represents a listener which will receive messages
 // from a channel.
-type Listener struct {
-	C <-chan interface{}
-	f chan interface{}
+type Listener[T any] struct {
+	C <-chan T
+	f chan T
 }
 
 // NewListener creates a new listener which will forward messages
@@ -12,9 +12,9 @@ type Listener struct {
 // channel.
 // You will very rarely need to use this method directly in your
 // applications, prefer using From instead.
-func NewListener(source <-chan interface{}) *Listener {
-	out := make(chan interface{}, 0)
-	l := &Listener{
+func NewListener[T any](source <-chan T) *Listener[T] {
+	out := make(chan T, 0)
+	l := &Listener[T]{
 		C: out,
 	}
 
@@ -39,8 +39,8 @@ func NewListener(source <-chan interface{}) *Listener {
 // to a new listener and then returns the new listener.
 // You will generally not need to make use of this method in your
 // applications.
-func (l *Listener) Chain() *Listener {
-	f := make(chan interface{})
+func (l *Listener[T]) Chain() *Listener[T] {
+	f := make(chan T)
 	l.f = f
-	return NewListener(f)
+	return NewListener[T](f)
 }

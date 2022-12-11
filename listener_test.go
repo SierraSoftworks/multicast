@@ -5,12 +5,12 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/SierraSoftworks/multicast"
+	"github.com/SierraSoftworks/multicast/v2"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func ExampleListener() {
-	m := multicast.New()
+	m := multicast.New[any]()
 	l := m.Listen()
 
 	wg := sync.WaitGroup{}
